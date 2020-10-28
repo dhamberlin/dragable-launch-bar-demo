@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Magical Launchbar</title>
+    <style>
+        #icon-container {
+            margin-top: 100px;
+        }
+
+        img {
+            width: 60px;
+            height: 60px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h3>Add another draggable icon</h3>
+        <div>
+            <input type="text" placeholder="View url" id="url-input">
+        </div>
+        <div>
+            <input type="text" placeholder="Icon url" id="img-src-input">
+        </div>
+        <div>
+            <button onclick="addButtonPressed()">Add</button>
+        </div>
+    </div>
+    <p>
+        From here, you can drag any of the icons below into an Openfin Platform layout and a view with the given config
+        will be launched. View source to see how it works!
+    </p>
+
+    <div id="icon-container">
+    </div>
+
+
+
+    <script>
+        const PRESET_ICONS = [
+            {
+                iconUrl: 'https://cdn3.iconfinder.com/data/icons/popular-services-brands/512/twitter-128.png',
+                config: {
+                    url: 'https://twitter.com',
+                    isClosable: false
+                }
+            },
+            {
+                iconUrl: 'https://cdn3.iconfinder.com/data/icons/popular-services-brands/512/github-128.png',
+                config: {
+                    url: 'https://github.com'
+                }
+            },
+            {
+                iconUrl: 'https://cdn3.iconfinder.com/data/icons/popular-services-brands/512/youtube-128.png',
+                config: {
+                    url: 'https://youtube.com'
+                }
+            }
+        ];
+
+        function drag(ev) {
+            const config = JSON.parse(ev.target.dataset.config);
+            ev.dataTransfer.setData("view-config", JSON.stringify(config));
+        }
+
+        function addButtonPressed() {
+            const urlInput = document.querySelector('#url-input');
+            const iconSrcInput = document.querySelector('#img-src-input');
+            const url = urlInput.value;
+            const iconUrl = iconSrcInput.value;
+            addIcon(iconUrl, { url });
+        }
+
+        function addIcon(iconUrl, viewConfig) {
+            const img = document.createElement('img');
+            img.src = iconUrl;
+            img.dataset.config = JSON.stringify(viewConfig);
+            img.draggable = true;
+            img.ondragstart = drag;
+            document.querySelector('#icon-container').appendChild(img);
+        }
+
+        PRESET_ICONS.forEach(iconConfig => {
+            addIcon(iconConfig.iconUrl, iconConfig.config);
+        });
+    </script>
+</body>
+
+</html>
